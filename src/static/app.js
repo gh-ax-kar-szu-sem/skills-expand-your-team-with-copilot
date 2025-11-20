@@ -472,6 +472,25 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // Social sharing functions
+  function createShareUrl(platform, name, description, schedule) {
+    const pageUrl = window.location.href;
+    const shareText = `Check out ${name} at Mergington High School! ${description} Schedule: ${schedule}`;
+    
+    switch (platform) {
+      case 'facebook':
+        return `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}&quote=${encodeURIComponent(shareText)}`;
+      case 'twitter':
+        return `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(pageUrl)}`;
+      case 'whatsapp':
+        return `https://wa.me/?text=${encodeURIComponent(shareText + ' ' + pageUrl)}`;
+      case 'email':
+        return `mailto:?subject=${encodeURIComponent('Check out ' + name + ' at Mergington High School')}&body=${encodeURIComponent(shareText + '\n\n' + pageUrl)}`;
+      default:
+        return '#';
+    }
+  }
+
   // Function to render a single activity card
   function renderActivityCard(name, details) {
     const activityCard = document.createElement("div");
@@ -519,6 +538,39 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
     `;
 
+    // Create share buttons
+    const shareButtons = `
+      <div class="share-buttons">
+        <span class="share-label">Share:</span>
+        <a href="${createShareUrl('facebook', name, details.description, formattedSchedule)}" 
+           target="_blank" 
+           rel="noopener noreferrer" 
+           class="share-button facebook"
+           title="Share on Facebook">
+          📘 Facebook
+        </a>
+        <a href="${createShareUrl('twitter', name, details.description, formattedSchedule)}" 
+           target="_blank" 
+           rel="noopener noreferrer" 
+           class="share-button twitter"
+           title="Share on Twitter">
+          🐦 Twitter
+        </a>
+        <a href="${createShareUrl('whatsapp', name, details.description, formattedSchedule)}" 
+           target="_blank" 
+           rel="noopener noreferrer" 
+           class="share-button whatsapp"
+           title="Share on WhatsApp">
+          💬 WhatsApp
+        </a>
+        <a href="${createShareUrl('email', name, details.description, formattedSchedule)}" 
+           class="share-button email"
+           title="Share via Email">
+          ✉️ Email
+        </a>
+      </div>
+    `;
+
     activityCard.innerHTML = `
       ${tagHtml}
       <h4>${name}</h4>
@@ -552,6 +604,7 @@ document.addEventListener("DOMContentLoaded", () => {
             .join("")}
         </ul>
       </div>
+      ${shareButtons}
       <div class="activity-card-actions">
         ${
           currentUser
